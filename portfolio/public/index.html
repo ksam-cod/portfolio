@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0F172A">
+  <title>Portfolio</title>
+  <meta name="description" content="Personal portfolio">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="page">
+    <section id="home" class="hero">
+      <span id="status" class="status" hidden><i class="pulse"></i>Available for work</span>
+      <h1 id="name">&nbsp;</h1>
+      <p id="headline" class="headline"></p>
+      <p id="bio" class="muted"></p>
+      <div class="row">
+        <a class="btn btn-primary" href="#contact">Get in touch</a>
+        <a id="github" class="btn btn-ghost" href="#" hidden target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a id="linkedin" class="btn btn-ghost" href="#" hidden target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      </div>
+    </section>
+
+    <section id="skills" aria-labelledby="skills-h">
+      <h2 id="skills-h">Skills</h2>
+      <div id="skills-list" class="pills"></div>
+    </section>
+
+    <section id="projects" aria-labelledby="projects-h">
+      <h2 id="projects-h">Projects</h2>
+      <div id="projects-list" class="stack"></div>
+    </section>
+
+    <section id="experience" aria-labelledby="exp-h">
+      <h2 id="exp-h">Experience</h2>
+      <ol id="exp-list" class="timeline"></ol>
+    </section>
+
+    <section id="contact" aria-labelledby="contact-h">
+      <h2 id="contact-h">Contact</h2>
+      <form id="contact-form" class="card form" novalidate>
+        <label for="c-name">Name</label>
+        <input id="c-name" name="name" autocomplete="name" maxlength="120" required>
+        <label for="c-email">Email</label>
+        <input id="c-email" name="email" type="email" autocomplete="email" maxlength="254" required>
+        <label for="c-body">Message</label>
+        <textarea id="c-body" name="body" rows="5" maxlength="5000" required></textarea>
+        <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button class="btn btn-primary" type="submit">Send message</button>
+        <p id="form-msg" class="form-msg" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+  </main>
+
+  <nav class="dock" aria-label="Sections">
+    <a href="#home" data-target="home" aria-label="Home"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><i></i></a>
+    <a href="#skills" data-target="skills" aria-label="Skills"><svg viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg><i></i></a>
+    <a href="#projects" data-target="projects" aria-label="Projects"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg><i></i></a>
+    <a href="#experience" data-target="experience" aria-label="Experience"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg><i></i></a>
+    <a href="#contact" data-target="contact" aria-label="Contact"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><i></i></a>
+  </nav>
+
+  <script src="/app.js"></script>
+</body>
+</html>

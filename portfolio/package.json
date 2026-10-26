@@ -1,0 +1,18 @@
+{
+  "name": "obsidian-indigo-portfolio",
+  "version": "1.0.0",
+  "description": "Portfolio backend (Express + PostgreSQL) serving the Obsidian Indigo mobile-first frontend",
+  "main": "src/server.js",
+  "private": true,
+  "engines": { "node": ">=20.6" },
+  "scripts": {
+    "migrate": "node --env-file-if-exists=.env scripts/migrate.js",
+    "seed": "node --env-file-if-exists=.env scripts/migrate.js --seed",
+    "start": "node --env-file-if-exists=.env src/server.js",
+    "dev": "node --watch --env-file-if-exists=.env src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "pg": "^8.13.1"
+  }
+}
