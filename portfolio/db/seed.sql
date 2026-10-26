@@ -1,27 +1,81 @@
--- Sample content. Replace with your own via the admin API or by editing this file.
-INSERT INTO profile (id, full_name, headline, bio, location, email, github_url, linkedin_url, available)
-VALUES (1, 'Your Name', 'Software engineer building precise, human-centred products',
-  'I design and build web and mobile software end to end, from database schema to pixel-level interface details.',
-  'Nairobi, Kenya', 'you@example.com', 'https://github.com/', 'https://linkedin.com/', TRUE)
-ON CONFLICT (id) DO NOTHING;
+-- Profile and skills transcribed from the supplied MalConnect portfolio image.
+INSERT INTO profile
+  (id, full_name, headline, bio, location, email, phone, github_url, linkedin_url, available)
+VALUES
+  (1, 'MalConnect', 'Connecting ideas. Building solutions.',
+   'I build powerful solutions through code, data, and creativity. I am a problem solver, detail-oriented, and always learning so I can deliver high-quality work.',
+   'Nairobi, Kenya', 'samalexkariuki2@gmail.com', '+254706915713', NULL, NULL, TRUE)
+ON CONFLICT (id) DO UPDATE SET
+  full_name = EXCLUDED.full_name,
+  headline = EXCLUDED.headline,
+  bio = EXCLUDED.bio,
+  location = EXCLUDED.location,
+  email = EXCLUDED.email,
+  phone = EXCLUDED.phone,
+  github_url = EXCLUDED.github_url,
+  linkedin_url = EXCLUDED.linkedin_url,
+  available = EXCLUDED.available,
+  updated_at = now();
+
+-- Remove only the starter demo skills; preserve skills managed through the API.
+DELETE FROM skills WHERE name IN (
+  'TypeScript', 'JavaScript', 'Python', 'Node.js', 'PostgreSQL',
+  'REST APIs', 'React', 'CSS', 'Docker', 'Git'
+);
 
 INSERT INTO skills (name, category, sort_order) VALUES
-  ('TypeScript','Languages',1), ('JavaScript','Languages',2), ('Python','Languages',3),
-  ('Node.js','Backend',4), ('PostgreSQL','Backend',5), ('REST APIs','Backend',6),
-  ('React','Frontend',7), ('CSS','Frontend',8), ('Docker','Tooling',9), ('Git','Tooling',10)
-ON CONFLICT (name) DO NOTHING;
+  ('Problem Solving', 'Software Engineering', 1),
+  ('Clean & Scalable Code', 'Software Engineering', 2),
+  ('Data Structures & Algorithms', 'Software Engineering', 3),
+  ('Software Design & Architecture', 'Software Engineering', 4),
+  ('Testing & Debugging', 'Software Engineering', 5),
+  ('Git & Version Control', 'Software Engineering', 6),
+  ('Database Design', 'Database Management', 1),
+  ('SQL & Query Optimization', 'Database Management', 2),
+  ('Normalization', 'Database Management', 3),
+  ('Data Modeling', 'Database Management', 4),
+  ('Backup & Recovery', 'Database Management', 5),
+  ('Performance Tuning', 'Database Management', 6),
+  ('Data Collection', 'Data Analytics', 1),
+  ('Data Cleaning', 'Data Analytics', 2),
+  ('Exploratory Data Analysis', 'Data Analytics', 3),
+  ('Data Visualization', 'Data Analytics', 4),
+  ('Insights & Reporting', 'Data Analytics', 5),
+  ('Python, Excel, Pandas, Matplotlib & Power BI', 'Data Analytics', 6),
+  ('Responsive Frontend Development', 'Full Stack Web Development', 1),
+  ('Robust Backend Development', 'Full Stack Web Development', 2),
+  ('RESTful APIs', 'Full Stack Web Development', 3),
+  ('Authentication & Security', 'Full Stack Web Development', 4),
+  ('Deployment & Hosting', 'Full Stack Web Development', 5),
+  ('Cross-Platform Solutions', 'Application Development', 1),
+  ('User-Centered Design', 'Application Development', 2),
+  ('Performance & Scalability', 'Application Development', 3),
+  ('Flutter, React Native, Java & Kotlin', 'Application Development', 4),
+  ('Photo Editing', 'Photoshop Design', 1),
+  ('Graphic Design', 'Photoshop Design', 2),
+  ('UI/UX Mockups', 'Photoshop Design', 3),
+  ('Banners & Thumbnails', 'Photoshop Design', 4),
+  ('Social Media Graphics', 'Photoshop Design', 5),
+  ('Creative & Professional Visuals', 'Photoshop Design', 6),
+  ('HTML5', 'Tools & Technologies', 1),
+  ('CSS3', 'Tools & Technologies', 2),
+  ('JavaScript', 'Tools & Technologies', 3),
+  ('React', 'Tools & Technologies', 4),
+  ('Node.js', 'Tools & Technologies', 5),
+  ('Python', 'Tools & Technologies', 6),
+  ('PostgreSQL', 'Tools & Technologies', 7),
+  ('MongoDB', 'Tools & Technologies', 8),
+  ('Git', 'Tools & Technologies', 9),
+  ('Docker', 'Tools & Technologies', 10),
+  ('Power BI', 'Tools & Technologies', 11)
+ON CONFLICT (name) DO UPDATE SET
+  category = EXCLUDED.category,
+  sort_order = EXCLUDED.sort_order;
 
-INSERT INTO projects (title, summary, repo_url, live_url, tech, featured, sort_order)
-SELECT * FROM (VALUES
-  ('Inventory Pulse', 'Real-time stock tracking dashboard for small retailers with low-stock alerts.', 'https://github.com/', NULL, ARRAY['Node.js','PostgreSQL','React'], TRUE, 1),
-  ('Trail Notes', 'Offline-first mobile notes app for hikers, with GPS-tagged entries.', 'https://github.com/', NULL, ARRAY['TypeScript','SQLite'], TRUE, 2),
-  ('Ledger CLI', 'Command-line double-entry bookkeeping tool with CSV import.', 'https://github.com/', NULL, ARRAY['Python'], FALSE, 3)
-) AS v(title, summary, repo_url, live_url, tech, featured, sort_order)
-WHERE NOT EXISTS (SELECT 1 FROM projects);
-
-INSERT INTO experience (role, company, description, start_date, end_date)
-SELECT * FROM (VALUES
-  ('Senior Software Engineer', 'Acme Labs', 'Lead a team of four shipping a payments platform.', DATE '2023-03-01', NULL::date),
-  ('Software Engineer', 'Brightside Co.', 'Built internal tooling and REST services in Node.js.', DATE '2020-06-01', DATE '2023-02-28')
-) AS v(role, company, description, start_date, end_date)
-WHERE NOT EXISTS (SELECT 1 FROM experience);
+-- Remove only the demo entries shipped with the starter seed; do not affect real records.
+DELETE FROM projects WHERE title IN ('Inventory Pulse', 'Trail Notes', 'Ledger CLI');
+DELETE FROM experience
+WHERE (role, company) IN (
+  ('Senior Software Engineer', 'Acme Labs'),
+  ('Software Engineer', 'Brightside Co.')
+);

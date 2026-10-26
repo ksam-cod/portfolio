@@ -28,6 +28,14 @@
     $('headline').textContent = p.headline;
     $('bio').textContent = p.bio;
     $('status').hidden = !p.available;
+    if (p.email) {
+      $('contact-email').href = `mailto:${p.email}`;
+      $('contact-email').textContent = p.email;
+    }
+    if (p.phone) {
+      $('contact-phone').href = `tel:${p.phone.replace(/[^\d+]/g, '')}`;
+      $('contact-phone').textContent = `Tel: ${p.phone}`;
+    }
     if (isHttp(p.github_url)) { $('github').href = p.github_url; $('github').hidden = false; }
     if (isHttp(p.linkedin_url)) { $('linkedin').href = p.linkedin_url; $('linkedin').hidden = false; }
   }
@@ -35,7 +43,18 @@
   function renderSkills(rows) {
     const box = $('skills-list');
     if (!rows.length) return box.replaceChildren(empty('Nothing here yet.'));
-    box.replaceChildren(...pills(rows.map((s) => s.name)));
+    const groups = new Map();
+    rows.forEach((skill) => {
+      const category = skill.category || 'Other';
+      if (!groups.has(category)) groups.set(category, []);
+      groups.get(category).push(skill.name);
+    });
+    box.replaceChildren(...[...groups].map(([category, skills]) =>
+      el('article', { class: `skill-card${category === 'Tools & Technologies' ? ' skill-card-tools' : ''}` }, [
+        el('h3', { text: category }),
+        el('ul', {}, skills.map((name) => el('li', { text: name }))),
+      ])
+    ));
   }
 
   function renderProjects(rows) {
@@ -56,6 +75,10 @@
     }));
   }
 
+  function loadProjects() {
+    return getJSON('/api/projects').then(renderProjects);
+  }
+
   function renderExperience(rows) {
     const box = $('exp-list');
     if (!rows.length) return box.replaceChildren(empty('No experience listed yet.'));
@@ -69,7 +92,7 @@
   // Load everything independently so one failure doesn't blank the page
   getJSON('/api/profile').then(renderProfile).catch(() => renderProfile(null));
   getJSON('/api/skills').then(renderSkills).catch(() => $('skills-list').replaceChildren(empty('Could not load skills.')));
-  getJSON('/api/projects').then(renderProjects).catch(() => $('projects-list').replaceChildren(empty('Could not load projects.')));
+  loadProjects().catch(() => $('projects-list').replaceChildren(empty('Could not load projects.')));
   getJSON('/api/experience').then(renderExperience).catch(() => $('exp-list').replaceChildren(empty('Could not load experience.')));
 
   // Contact form
@@ -102,12 +125,45 @@
     }
   });
 
-  // Dock: highlight the section in view
-  const links = [...document.querySelectorAll('.dock a')];
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach((en) => {
-      if (en.isIntersecting) links.forEach((a) => a.classList.toggle('active', a.dataset.target === en.target.id));
-    });
-  }, { rootMargin: '-40% 0px -55% 0px' });
-  links.forEach((a) => { const s = $(a.dataset.target); if (s) io.observe(s); });
+  // Project publishing uses the admin token only for this request; it is not saved.
+  const projectForm = $('project-form');
+  const projectMsg = $('project-form-msg');
+  projectForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!projectForm.reportValidity()) return;
+    const btn = projectForm.querySelector('button');
+    const data = new FormData(projectForm);
+    const token = data.get('admin_token').trim();
+    const project = {
+      title: data.get('title').trim(),
+      summary: data.get('summary').trim(),
+      tech: data.get('tech').split(',').map((item) => item.trim()).filter(Boolean),
+      image_url: data.get('image_url').trim() || null,
+      live_url: data.get('live_url').trim() || null,
+      repo_url: data.get('repo_url').trim() || null,
+      featured: data.has('featured'),
+      sort_order: Number(data.get('sort_order')) || 0,
+    };
+    projectMsg.className = 'form-msg';
+    projectMsg.textContent = '';
+    btn.disabled = true;
+    try {
+      const res = await fetch('/api/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(project),
+      });
+      const out = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(out.error || 'Could not publish this project');
+      projectForm.reset();
+      projectMsg.classList.add('ok');
+      projectMsg.textContent = 'Project published and added to the showcase.';
+      await loadProjects();
+    } catch (err) {
+      projectMsg.classList.add('err');
+      projectMsg.textContent = err.message;
+    } finally {
+      btn.disabled = false;
+    }
+  });
 })();

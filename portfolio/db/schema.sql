@@ -6,11 +6,13 @@ CREATE TABLE IF NOT EXISTS profile (
   bio           TEXT NOT NULL,
   location      TEXT,
   email         TEXT,
+  phone         TEXT,
   github_url    TEXT,
   linkedin_url  TEXT,
   available     BOOLEAN NOT NULL DEFAULT TRUE,
   updated_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+ALTER TABLE profile ADD COLUMN IF NOT EXISTS phone TEXT;
 
 CREATE TABLE IF NOT EXISTS projects (
   id           SERIAL PRIMARY KEY,

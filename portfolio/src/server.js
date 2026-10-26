@@ -53,6 +53,7 @@ const profileFields = {
   bio: { type: 'string', required: true, max: 1500 },
   location: { type: 'string', max: 120 },
   email: { type: 'string', max: 254 },
+  phone: { type: 'string', max: 40 },
   github_url: { type: 'url' },
   linkedin_url: { type: 'url' },
   available: { type: 'bool' },
@@ -133,7 +134,7 @@ app.delete('/api/admin/messages/:id(\\d+)', requireAdmin, async (req, res, next)
 app.use('/api', (_req, res) => res.status(404).json({ error: 'Not found' }));
 
 // ---------- Frontend ----------
-app.use(express.static(path.join(__dirname, '..', 'public'), { maxAge: '1h', extensions: ['html'] }));
+app.use(express.static(path.join(__dirname, '..', 'public'), { maxAge: 0, extensions: ['html'] }));
 
 // ---------- Errors ----------
 // eslint-disable-next-line no-unused-vars

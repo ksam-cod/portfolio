@@ -1,0 +1,19 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Portfolio: Run locally",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"portfolio\\scripts\\run-local.ps1"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}

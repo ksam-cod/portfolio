@@ -1,18 +1,36 @@
-# Obsidian Indigo Portfolio
+# MalConnect Portfolio
 
-Express + PostgreSQL backend serving a mobile-first portfolio frontend styled from `DESIGN.md`.
+Express + PostgreSQL backend serving the MalConnect portfolio frontend.
 
-## Run it
+## Run it locally on Windows
 
-```bash
-npm install
-cp .env.example .env        # set DATABASE_URL and ADMIN_TOKEN
-createdb portfolio          # or use any Postgres URL
-npm run seed                # creates tables + sample content (use `npm run migrate` for tables only)
-npm start                   # http://localhost:3000
+Requirements: Node.js 20.6+ and PostgreSQL 13+. Create a database named `portfolio` in pgAdmin (or with `createdb` if PostgreSQL's command-line tools are on your PATH).
+
+From PowerShell, open the project directory and run:
+
+```powershell
+Copy-Item .env.example .env
 ```
 
-Requires Node 20.6+ and PostgreSQL 13+.
+Edit `.env` and set `DATABASE_URL` to your local PostgreSQL connection string, for example `postgres://postgres:YOUR_PASSWORD@localhost:5432/portfolio`. If the password contains URL-reserved characters, URL-encode them. Set `ADMIN_TOKEN` to a private random value of at least 16 characters; for example, generate one with:
+
+```powershell
+node -e "console.log(require('crypto').randomBytes(24).toString('hex'))"
+```
+
+Then install dependencies, create the tables and sample records, and start the server:
+
+```powershell
+npm install
+npm run seed
+npm start
+```
+
+Open `http://localhost:3000` in your browser. Do not open `public\index.html` directly: the Express server serves the frontend and its `/api/...` routes from the same origin, so no separate frontend server or CORS setup is needed. Check the backend/database connection at `http://localhost:3000/api/health`; a healthy response is `{"ok":true}`.
+
+In VS Code, you can also run the **Portfolio: Run locally** task from the Command Palette (`Tasks: Run Task`). Enter the PostgreSQL password in the integrated terminal when prompted; it is hidden while typing. The task verifies the connection, updates the local `.env` URL with URL-encoded credentials, seeds the database, and starts the site.
+
+To publish a project, open **Add a project** below the Projects section on the site, enter the `ADMIN_TOKEN` from `.env`, fill in the project details, and select **Publish project**. Add a live URL to show a link to the running project. The token is used for the request and is not stored in the browser.
 
 ## API
 
@@ -42,5 +60,4 @@ curl -X POST localhost:3000/api/projects -H "Authorization: Bearer $ADMIN_TOKEN"
 
 ## Notes
 
-- `DESIGN.md` lists two slightly different palettes (front-matter Material tokens vs. the prose slate/indigo values). The frontend uses the prose values (`#0F172A`, `#1E293B`, `#6366F1`, ...), which the component specs reference.
 - Admin endpoints are disabled until `ADMIN_TOKEN` (16+ chars) is set. Serve over HTTPS in production.

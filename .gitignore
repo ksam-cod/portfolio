@@ -1,0 +1,4 @@
+portfolio/.env
+portfolio/.env.*
+!portfolio/.env.example
+portfolio/node_modules/
