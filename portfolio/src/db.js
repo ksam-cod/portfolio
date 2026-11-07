@@ -1,20 +1,25 @@
 'use strict';
 const { Pool } = require('pg');
 
-function sslOption() {
+function sslOption(url) {
   const flag = String(process.env.PGSSL || '').toLowerCase();
   if (flag === 'false' || flag === '0') return undefined;
   if (flag === 'true' || flag === '1') return { rejectUnauthorized: false };
-  const url = process.env.DATABASE_URL || '';
-  if (process.env.NODE_ENV === 'production' || /render\.com/i.test(url)) {
+  if (process.env.NODE_ENV === 'production' || /render\.com/i.test(url || '')) {
     return { rejectUnauthorized: false };
   }
   return undefined;
 }
 
+const connectionString =
+  process.env.DATABASE_URL ||
+  process.env.Database_url ||
+  process.env.database_url ||
+  'postgres://postgres:postgres@localhost:5432/portfolio';
+
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/portfolio',
-  ssl: sslOption(),
+  connectionString,
+  ssl: sslOption(connectionString),
   max: 10,
   idleTimeoutMillis: 30000,
 });
