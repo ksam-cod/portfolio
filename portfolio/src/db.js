@@ -11,11 +11,19 @@ function sslOption(url) {
   return undefined;
 }
 
-const connectionString =
-  process.env.DATABASE_URL ||
-  process.env.Database_url ||
-  process.env.database_url ||
-  'postgres://postgres:postgres@localhost:5432/portfolio';
+function resolveConnectionString() {
+  const candidates = [
+    process.env.DATABASE_URL,
+    process.env.Database_url,
+    process.env.database_url,
+  ];
+  for (const raw of candidates) {
+    if (raw && /^postgres(ql)?:\/\//i.test(raw.trim())) return raw.trim();
+  }
+  return 'postgres://postgres:postgres@localhost:5432/portfolio';
+}
+
+const connectionString = resolveConnectionString();
 
 const pool = new Pool({
   connectionString,

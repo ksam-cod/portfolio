@@ -5,6 +5,6 @@
   "scripts": {
     "postinstall": "npm --prefix portfolio ci",
     "release": "npm --prefix portfolio run release",
-    "start": "npm --prefix portfolio run release && npm --prefix portfolio start"
+    "start": "npm --prefix portfolio start"
   }
 }

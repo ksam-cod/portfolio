@@ -1,5 +1,6 @@
 'use strict';
 const path = require('path');
+const { spawn } = require('child_process');
 const express = require('express');
 const { query } = require('./db');
 const { requireAdmin, rateLimit } = require('./auth');
@@ -150,6 +151,16 @@ app.use((err, _req, res, _next) => {
 
 const port = Number(process.env.PORT) || 3000;
 if (require.main === module) {
-  app.listen(port, '0.0.0.0', () => console.log(`Portfolio running on http://0.0.0.0:${port}`));
+  app.listen(port, '0.0.0.0', () => {
+    console.log(`Portfolio running on http://0.0.0.0:${port}`);
+    const child = spawn(
+      process.execPath,
+      ['scripts/migrate.js', '--seed-if-empty'],
+      { cwd: path.join(__dirname, '..'), env: process.env, stdio: 'inherit' }
+    );
+    child.on('exit', (code) => {
+      if (code) console.error('Database setup exited with code', code);
+    });
+  });
 }
 module.exports = app;
