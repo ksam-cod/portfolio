@@ -150,6 +150,6 @@ app.use((err, _req, res, _next) => {
 
 const port = Number(process.env.PORT) || 3000;
 if (require.main === module) {
-  app.listen(port, () => console.log(`Portfolio running on http://localhost:${port}`));
+  app.listen(port, '0.0.0.0', () => console.log(`Portfolio running on http://0.0.0.0:${port}`));
 }
 module.exports = app;

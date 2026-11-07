@@ -1,0 +1,35 @@
+# Render Blueprint: web service + Postgres for MalConnect
+# Apply at https://dashboard.render.com/blueprints/new
+# Free Postgres expires after 30 days; upgrade or replace it before then.
+
+databases:
+  - name: malconnect-db
+    plan: free
+    region: frankfurt
+    databaseName: portfolio
+    user: portfolio
+    postgresMajorVersion: '16'
+
+services:
+  - type: web
+    name: malconnect-portfolio
+    runtime: node
+    plan: free
+    region: frankfurt
+    rootDir: portfolio
+    buildCommand: npm ci
+    preDeployCommand: npm run release
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeployTrigger: commit
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PGSSL
+        value: 'true'
+      - key: DATABASE_URL
+        fromDatabase:
+          name: malconnect-db
+          property: connectionString
+      - key: ADMIN_TOKEN
+        generateValue: true

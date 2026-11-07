@@ -58,6 +58,17 @@ curl -X POST localhost:3000/api/projects -H "Authorization: Bearer $ADMIN_TOKEN"
 - `src/`: `server.js` (routes), `crud.js` (validated CRUD factory), `auth.js` (token guard, rate limiter), `db.js`
 - `public/`: frontend (`index.html`, `styles.css`, `app.js`), rendered from the live API
 
+## Host on Render
+
+The repo root includes `render.yaml`. After you push this branch:
+
+1. Open [Render Blueprints](https://dashboard.render.com/blueprints/new) and connect `ksam-cod/portfolio`.
+2. Apply the blueprint. That creates a free web service (`malconnect-portfolio`) and a free Postgres database (`malconnect-db`).
+3. Copy `ADMIN_TOKEN` from the web service **Environment** tab. Use it on the live site when you publish a project.
+4. The live URL is `https://malconnect-portfolio.onrender.com` (Render may add a suffix if the name is taken). Confirm `/api/health` returns `{"ok":true}`.
+
+Free web services sleep after idle traffic (first load can take ~50s). Free Postgres expires after 30 days unless you upgrade it.
+
 ## Notes
 
 - Admin endpoints are disabled until `ADMIN_TOKEN` (16+ chars) is set. Serve over HTTPS in production.
