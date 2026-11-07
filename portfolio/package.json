@@ -4,7 +4,7 @@
   "description": "Portfolio backend (Express + PostgreSQL) serving the Obsidian Indigo mobile-first frontend",
   "main": "src/server.js",
   "private": true,
-  "engines": { "node": ">=20.6" },
+  "engines": { "node": "20.x" },
   "scripts": {
     "migrate": "node --env-file-if-exists=.env scripts/migrate.js",
     "seed": "node --env-file-if-exists=.env scripts/migrate.js --seed",
