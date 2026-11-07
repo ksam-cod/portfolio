@@ -18,8 +18,7 @@ services:
     region: frankfurt
     rootDir: portfolio
     buildCommand: npm ci
-    preDeployCommand: npm run release
-    startCommand: npm start
+    startCommand: npm run release && npm start
     healthCheckPath: /api/health
     autoDeployTrigger: commit
     envVars:
